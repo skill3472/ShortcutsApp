@@ -22,6 +22,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>keystrokes — login</title>
+</svelte:head>
+
 <div data-theme="dim" style="min-height: 100vh;" class="flex items-center justify-center bg-base-200">
   <div class="card w-full max-w-sm bg-base-100 shadow-xl">
     <div class="card-body gap-4">

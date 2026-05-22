@@ -47,6 +47,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>keystrokes</title>
+</svelte:head>
+
 <div data-theme={theme} style="min-height: 100vh;">
   <div class="navbar bg-base-200 px-4 border-b border-base-300">
     <div class="flex-1 gap-2 items-center flex-wrap">

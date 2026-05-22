@@ -198,6 +198,10 @@
   onMount(loadApps);
 </script>
 
+<svelte:head>
+  <title>keystrokes — admin</title>
+</svelte:head>
+
 <div data-theme="dim" style="min-height: 100vh;" class="flex flex-col">
   <!-- Navbar -->
   <div class="navbar bg-base-200 border-b border-base-300 px-4">
