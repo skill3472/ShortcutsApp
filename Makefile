@@ -20,13 +20,13 @@ logs:
 restart:
 	docker compose restart
 
-# First-time / data setup
+# First-time / data setup (runs inside the backend container)
 
 create-admin:
-	cd backend && uv run python src/scripts/create_admin_user.py
+	docker compose exec backend python src/scripts/create_admin_user.py
 
 seed:
-	cd backend && uv run python src/scripts/seed.py
+	docker compose exec backend python src/scripts/seed.py
 
 # Local development
 

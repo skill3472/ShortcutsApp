@@ -80,34 +80,34 @@ The dev server runs at `http://localhost:5173` and proxies `/api/` to the backen
 
 All commands can be run from the project root via `make`.
 
-### Docker
+### Docker (requires Docker)
 
-| Command          | Description                        |
-|------------------|------------------------------------|
+| Command          | Description                          |
+|------------------|--------------------------------------|
 | `make up`        | Start all services in the background |
-| `make down`      | Stop and remove containers         |
-| `make build`     | Rebuild Docker images              |
-| `make logs`      | Tail logs from all services        |
-| `make restart`   | Restart all services               |
+| `make down`      | Stop and remove containers           |
+| `make build`     | Rebuild Docker images                |
+| `make logs`      | Tail logs from all services          |
+| `make restart`   | Restart all services                 |
 
-### Data
-
-| Command              | Description                                |
-|----------------------|--------------------------------------------|
-| `make create-admin`  | Interactive prompt to create an admin user |
-| `make seed`          | Seed the database with example shortcuts   |
-
-### Development
+### Local development (requires uv and pnpm)
 
 | Command              | Description                              |
 |----------------------|------------------------------------------|
 | `make dev-backend`   | Run the backend with hot reload          |
 | `make dev-frontend`  | Run the frontend dev server              |
-| `make gen-types`     | Regenerate TypeScript types from the backend OpenAPI spec (requires backend running) |
+| `make gen-types`     | Regenerate TypeScript types from the backend OpenAPI spec (requires backend running locally) |
 | `make check`         | Run SvelteKit type checker               |
 | `make lint`          | Lint both frontend and backend           |
 | `make lint-frontend` | Run ESLint on the frontend               |
 | `make lint-backend`  | Run Ruff on the backend                  |
+
+### Data (runs inside the backend container — requires `make up` first)
+
+| Command              | Description                                |
+|----------------------|--------------------------------------------|
+| `make create-admin`  | Interactive prompt to create an admin user |
+| `make seed`          | Seed the database with example shortcuts   |
 
 ---
 
