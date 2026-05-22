@@ -32,7 +32,7 @@ Then bring everything up:
 make up
 ```
 
-The app is served at `http://localhost` via nginx. The first time you run it, create an admin user:
+The app is served at `http://localhost:8080` via nginx. The first time you run it, create an admin user:
 
 ```
 make create-admin
