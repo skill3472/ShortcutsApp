@@ -24,6 +24,7 @@ AuthDep = Annotated[int, Security(get_current_user_id)]
 
 # Applications
 
+
 @shortcuts_router.post("/applications", response_model=Application)
 def create_application(body: CreateApplication, session: SessionDep, _: AuthDep):
     app = repo.create_application(session, body.name, body.color)
@@ -53,6 +54,7 @@ def delete_application(app_id: int, session: SessionDep, _: AuthDep):
 
 # Categories
 
+
 @shortcuts_router.post("/categories", response_model=ShortcutCategory)
 def create_category(body: CreateShortcutCategory, session: SessionDep, _: AuthDep):
     if not repo.get_application(session, body.app_id):
@@ -62,7 +64,9 @@ def create_category(body: CreateShortcutCategory, session: SessionDep, _: AuthDe
     return category
 
 
-@shortcuts_router.get("/applications/{app_id}/categories", response_model=list[ShortcutCategory])
+@shortcuts_router.get(
+    "/applications/{app_id}/categories", response_model=list[ShortcutCategory]
+)
 def list_categories(app_id: int, session: SessionDep):
     return repo.get_categories(session, app_id)
 
@@ -84,16 +88,21 @@ def delete_category(category_id: int, session: SessionDep, _: AuthDep):
 
 # Shortcuts
 
+
 @shortcuts_router.post("/shortcuts", response_model=Shortcut)
 def create_shortcut(body: CreateShortcut, session: SessionDep, _: AuthDep):
     if not repo.get_category(session, body.category_id):
         raise HTTPException(404, "Category not found")
-    shortcut = repo.create_shortcut(session, body.name, body.keystrokes, body.category_id)
+    shortcut = repo.create_shortcut(
+        session, body.name, body.keystrokes, body.category_id
+    )
     session.commit()
     return shortcut
 
 
-@shortcuts_router.get("/categories/{category_id}/shortcuts", response_model=list[Shortcut])
+@shortcuts_router.get(
+    "/categories/{category_id}/shortcuts", response_model=list[Shortcut]
+)
 def list_shortcuts(category_id: int, session: SessionDep):
     return repo.get_shortcuts(session, category_id)
 
@@ -107,7 +116,9 @@ def get_shortcut(shortcut_id: int, session: SessionDep):
 
 
 @shortcuts_router.patch("/shortcuts/{shortcut_id}", response_model=Shortcut)
-def update_shortcut(shortcut_id: int, body: UpdateShortcut, session: SessionDep, _: AuthDep):
+def update_shortcut(
+    shortcut_id: int, body: UpdateShortcut, session: SessionDep, _: AuthDep
+):
     shortcut = repo.update_shortcut(session, shortcut_id, body.name, body.keystrokes)
     if not shortcut:
         raise HTTPException(404)

@@ -33,7 +33,9 @@ class ShortcutCategory(Base):
 
     category_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-    app_id: Mapped[int] = mapped_column(ForeignKey("applications.application_id", ondelete="CASCADE"))
+    app_id: Mapped[int] = mapped_column(
+        ForeignKey("applications.application_id", ondelete="CASCADE")
+    )
     app: Mapped["Application"] = relationship(back_populates="categories")
     shortcuts: Mapped[list["Shortcut"]] = relationship(
         back_populates="category", cascade="all, delete-orphan"

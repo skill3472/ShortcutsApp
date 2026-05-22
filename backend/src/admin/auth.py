@@ -9,6 +9,7 @@ from config import settings
 _ALGORITHM = "HS256"
 _TOKEN_TTL = timedelta(hours=8)
 
+
 def get_current_user_id(request: Request) -> int:
     token = request.cookies.get("session")
     if not token:

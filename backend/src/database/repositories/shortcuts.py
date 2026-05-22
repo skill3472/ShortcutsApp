@@ -9,6 +9,7 @@ def _shortcut_options():
 
 # Applications
 
+
 def create_application(session: Session, name: str, color: str) -> Application:
     app = Application(name=name, color=color)
     session.add(app)
@@ -34,6 +35,7 @@ def delete_application(session: Session, app_id: int) -> bool:
 
 
 # Categories
+
 
 def create_category(session: Session, name: str, app_id: int) -> ShortcutCategory:
     category = ShortcutCategory(name=name, app_id=app_id)
@@ -61,13 +63,19 @@ def delete_category(session: Session, category_id: int) -> bool:
 
 # Shortcuts
 
+
 def create_shortcut(
     session: Session, name: str, keystrokes: list[str], category_id: int
 ) -> Shortcut:
     shortcut = Shortcut(name=name, keystrokes=keystrokes, category_id=category_id)
     session.add(shortcut)
     session.flush()
-    return session.query(Shortcut).options(_shortcut_options()).filter_by(shortcut_id=shortcut.shortcut_id).one()
+    return (
+        session.query(Shortcut)
+        .options(_shortcut_options())
+        .filter_by(shortcut_id=shortcut.shortcut_id)
+        .one()
+    )
 
 
 def get_shortcuts(session: Session, category_id: int) -> list[Shortcut]:
@@ -102,7 +110,12 @@ def update_shortcut(
     if keystrokes is not None:
         shortcut.keystrokes = keystrokes
     session.flush()
-    return session.query(Shortcut).options(_shortcut_options()).filter_by(shortcut_id=shortcut_id).one()
+    return (
+        session.query(Shortcut)
+        .options(_shortcut_options())
+        .filter_by(shortcut_id=shortcut_id)
+        .one()
+    )
 
 
 def delete_shortcut(session: Session, shortcut_id: int) -> bool:
