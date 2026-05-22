@@ -1,16 +1,18 @@
-export type Binding = {
-  label: string;
-  keys: string[];
+export type AppShortcut = {
+  id: number;
+  name: string;
+  keystrokes: string[];
 };
 
-export type Category = {
-  title: string;
-  bindings: Binding[];
+export type AppCategory = {
+  id: number;
+  name: string;
+  shortcuts: AppShortcut[];
 };
 
-export type App = {
-  id: string;
-  label: string;
-  labelColor: string;
-  categories: Category[];
+export type AppData = {
+  id: number;
+  name: string;
+  color: string;
+  categories: AppCategory[];
 };

@@ -13,7 +13,7 @@
 
     const result = await login(username, password);
     if (result.ok) {
-      window.location.href = '/';
+      window.location.href = '/admin/panel';
     } else {
       error = result.error;
     }

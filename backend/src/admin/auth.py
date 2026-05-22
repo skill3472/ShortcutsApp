@@ -1,13 +1,22 @@
 import hashlib
 import os
 from datetime import UTC, datetime, timedelta
-
+from fastapi import Request, HTTPException
 import jwt
 
 from config import settings
 
 _ALGORITHM = "HS256"
 _TOKEN_TTL = timedelta(hours=8)
+
+def get_current_user_id(request: Request) -> int:
+    token = request.cookies.get("session")
+    if not token:
+        raise HTTPException(401)
+    try:
+        return decode_token(token)
+    except jwt.PyJWTError:
+        raise HTTPException(401)
 
 
 def hash_password(password: str) -> str:

@@ -1,16 +1,50 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import AppSection from '$lib/components/AppSection.svelte';
-  import { neovim } from '$lib/bindings/neovim';
-  import { tmux } from '$lib/bindings/tmux';
-  import type { App } from '$lib/bindings/bindings.types';
+  import { getApplications, getCategories, getShortcuts, type Application } from '$lib/api';
+  import type { AppData } from '$lib/bindings/bindings.types';
 
-  const apps: App[] = [neovim, tmux];
-
-  let theme = $state('dim');
+  let apps = $state<Application[]>([]);
+  let activeId = $state<number | null>(null);
+  let loadedApp = $state<AppData | null>(null);
+  let loading = $state(true);
+  let loadingApp = $state(false);
   let query = $state('');
-  let activeId = $state(apps[0].id);
+  let theme = $state('dim');
 
-  let activeApp = $derived(apps.find(a => a.id === activeId)!);
+  let activeApp = $derived(apps.find(a => a.application_id === activeId) ?? null);
+
+  async function loadApp(app: Application) {
+    loadingApp = true;
+    loadedApp = null;
+
+    const catsRes = await getCategories(app.application_id);
+    if (!catsRes.ok) { loadingApp = false; return; }
+
+    const categories = await Promise.all(
+      catsRes.data.map(async (cat) => {
+        const scRes = await getShortcuts(cat.category_id);
+        return { id: cat.category_id, name: cat.name, shortcuts: scRes.ok ? scRes.data : [] };
+      })
+    );
+
+    loadedApp = { id: app.application_id, name: app.name, color: app.color, categories };
+    loadingApp = false;
+  }
+
+  function selectApp(app: Application) {
+    activeId = app.application_id;
+    loadApp(app);
+  }
+
+  onMount(async () => {
+    const res = await getApplications();
+    if (res.ok) {
+      apps = res.data;
+      if (apps.length > 0) selectApp(apps[0]);
+    }
+    loading = false;
+  });
 </script>
 
 <div data-theme={theme} style="min-height: 100vh;">
@@ -19,10 +53,12 @@
       <span class="text-lg font-medium">keybinds</span>
       {#each apps as app}
         <button
-          class="badge cursor-pointer {app.id === activeId ? app.labelColor : 'badge-ghost'}"
-          onclick={() => activeId = app.id}
+          class="badge cursor-pointer transition-colors"
+          class:badge-ghost={app.application_id !== activeId}
+          style={app.application_id === activeId ? `background-color:${app.color}; border-color:${app.color}; color:white;` : ''}
+          onclick={() => selectApp(app)}
         >
-          {app.label}
+          {app.name}
         </button>
       {/each}
     </div>
@@ -41,5 +77,25 @@
     </div>
   </div>
 
-  <AppSection app={activeApp} {query} />
+  {#if loading}
+    <div class="flex justify-center items-center p-16">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  {:else if apps.length === 0}
+    <div class="flex flex-col items-center justify-center p-16 gap-2 text-base-content/40">
+      <p>No applications yet.</p>
+      <a href="/admin/panel" class="link text-sm">Add some in the admin panel →</a>
+    </div>
+  {:else if loadingApp}
+    <div class="flex justify-center items-center p-16">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  {:else if loadedApp}
+    <AppSection app={loadedApp} {query} />
+  {/if}
+
+  <footer class="border-t border-base-300 px-4 py-3 flex items-center justify-between text-xs text-base-content/40">
+    <span>made with &lt;3 by <a class="text-[cadetblue] hover:text-[cadetblue]/70 transition-colors" href="https://cv.mtym.me/">skill</a></span>
+    <a href="/admin" class="hover:text-base-content transition-colors">admin</a>
+  </footer>
 </div>

@@ -1,19 +1,17 @@
 <script lang="ts">
-  type Binding = {
-    label: string;
-    keys: string[];
-  };
+  import type { AppShortcut } from '$lib/bindings/bindings.types';
+  import KeyBadge from './KeyBadge.svelte';
 
   type Props = {
     title: string;
-    bindings: Binding[];
+    shortcuts: AppShortcut[];
     query?: string;
   };
 
-  let { title, bindings, query = '' }: Props = $props();
+  let { title, shortcuts, query = '' }: Props = $props();
 
   let visible = $derived(
-    bindings.filter(b => b.label.toLowerCase().includes(query.toLowerCase()))
+    shortcuts.filter(s => s.name.toLowerCase().includes(query.toLowerCase()))
   );
 </script>
 
@@ -24,12 +22,12 @@
         {title}
       </h2>
       <div class="flex flex-col gap-2">
-        {#each visible as binding}
+        {#each visible as shortcut}
           <div class="flex items-center justify-between">
-            <span class="text-sm text-base-content">{binding.label}</span>
+            <span class="text-sm text-base-content">{shortcut.name}</span>
             <div class="flex gap-1">
-              {#each binding.keys as key}
-                <kbd class="kbd kbd-sm">{key}</kbd>
+              {#each shortcut.keystrokes as key}
+                <KeyBadge {key} />
               {/each}
             </div>
           </div>
